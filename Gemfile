@@ -33,6 +33,10 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'sidekiq'
+
+gem 'mechanize', '~> 2.7', '>= 2.7.5'
+
 group :development, :test do
   # Call 'pry.binding' anywhere in the code to stop execution and get a debugger console
   gem 'pry-byebug'
