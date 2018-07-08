@@ -13,11 +13,11 @@
 ActiveRecord::Schema.define(version: 2018_07_06_101611) do
 
   create_table "huobi_pro_symbols", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
-    t.decimal "order_id", precision: 15, null: false
-    t.string "symbol", limit: 8, null: false
-    t.string "symbol_base", limit: 8, null: false
-    t.float "buy_price", null: false
-    t.float "buy_amount", null: false
+    t.decimal "order_id", precision: 15
+    t.string "symbol", limit: 8
+    t.string "symbol_base", limit: 8
+    t.float "buy_price"
+    t.float "buy_amount"
     t.datetime "buy_time", null: false
     t.float "target1"
     t.float "target2"
@@ -33,19 +33,19 @@ ActiveRecord::Schema.define(version: 2018_07_06_101611) do
   end
 
   create_table "huobi_pro_transactions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
-    t.bigint "huobi_pro_symbol_id", null: false
-    t.decimal "order_id", precision: 15, null: false
-    t.integer "type", limit: 1, default: 0
-    t.float "sell_price", null: false
-    t.float "sell_amount", null: false
+    t.bigint "huobi_pro_symbol_id"
+    t.decimal "order_id", precision: 15
+    t.integer "sell_type", limit: 1, default: 0
+    t.float "sell_price"
+    t.float "sell_amount"
     t.datetime "sell_time", null: false
-    t.float "profit", null: false
+    t.float "profit"
     t.boolean "status", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["huobi_pro_symbol_id"], name: "index_huobi_pro_transactions_on_huobi_pro_symbol_id"
+    t.index ["sell_type"], name: "index_huobi_pro_transactions_on_sell_type"
     t.index ["status"], name: "index_huobi_pro_transactions_on_status"
-    t.index ["type"], name: "index_huobi_pro_transactions_on_type"
   end
 
 end
