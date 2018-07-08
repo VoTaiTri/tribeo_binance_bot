@@ -10,32 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180706101611) do
+ActiveRecord::Schema.define(version: 2018_07_06_101611) do
 
-  create_table "huobi_pro_symbols", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
-    t.string "symbol", limit: 15, null: false
-    t.float "buy_price", limit: 24, null: false
-    t.float "buy_amount", limit: 24, null: false
+  create_table "huobi_pro_symbols", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.decimal "order_id", precision: 15, null: false
+    t.string "symbol", limit: 8, null: false
+    t.string "symbol_base", limit: 8, null: false
+    t.float "buy_price", null: false
+    t.float "buy_amount", null: false
     t.datetime "buy_time", null: false
-    t.float "target1", limit: 24
-    t.float "target2", limit: 24
-    t.float "target3", limit: 24
-    t.float "stoploss", limit: 24
-    t.float "profit", limit: 24
+    t.float "target1"
+    t.float "target2"
+    t.float "target3"
+    t.float "stoploss"
+    t.float "profit"
     t.boolean "status", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["status"], name: "index_huobi_pro_symbols_on_status"
     t.index ["symbol"], name: "index_huobi_pro_symbols_on_symbol"
+    t.index ["symbol_base"], name: "index_huobi_pro_symbols_on_symbol_base"
   end
 
-  create_table "huobi_pro_transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci" do |t|
-    t.bigint "huobi_pro_symbol_id"
+  create_table "huobi_pro_transactions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.bigint "huobi_pro_symbol_id", null: false
+    t.decimal "order_id", precision: 15, null: false
     t.integer "type", limit: 1, default: 0
-    t.float "sell_price", limit: 24
-    t.float "sell_amount", limit: 24
-    t.datetime "sell_time"
-    t.float "profit", limit: 24
+    t.float "sell_price", null: false
+    t.float "sell_amount", null: false
+    t.datetime "sell_time", null: false
+    t.float "profit", null: false
     t.boolean "status", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
