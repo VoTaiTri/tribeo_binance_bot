@@ -1,6 +1,4 @@
-
-
-# require 'httparty'
+require 'httparty'
 require 'json'
 require 'open-uri'
 require 'rack'
@@ -284,10 +282,8 @@ class Form::HuobiPro
     header['Signature'] = sign(data)
 
     url = "https://api.huobi.pro#{path}?#{Rack::Utils.build_query(header)}"
-    http = Net::HTTP.new(@uri.host, @uri.port)
-    http.use_ssl = true
 
-    response = http.send_request(request_method, url, JSON.dump(params), @headers).body
+    response = HTTParty.get url
     JSON.parse response
   rescue Exception => e
     { 'message' => 'error' ,'request_error' => e.message }
