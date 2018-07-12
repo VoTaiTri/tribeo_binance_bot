@@ -82,7 +82,7 @@ class Form::HuobiPro
 
     max_trade = datas.max_by{ |mx| mx['price'] }['price']
     min_trade = datas.min_by{ |mn| mn['price'] }['price']
-    [min_trade, max_trade]
+    { min: min_trade, max: max_trade }
   end
 
   # Tong hop gia ca thi truong trong 24h
@@ -284,9 +284,11 @@ class Form::HuobiPro
     header['Signature'] = sign(data)
 
     url = "https://api.huobi.pro#{path}?#{Rack::Utils.build_query(header)}"
+    http = Net::HTTP.new(@uri.host, @uri.port)  
+    http.use_ssl = true
 
-    response = HTTParty.get url
-    response.parsed_response
+    response = http.send_request(request_method, url, JSON.dump(params), @headers).body
+    JSON.parse response
   rescue Exception => e
     { 'message' => 'error' ,'request_error' => e.message }
   end
@@ -299,3 +301,4 @@ class Form::HuobiPro
     Hash[header.sort_by{ |key, _v| key }]
   end
 end
+
