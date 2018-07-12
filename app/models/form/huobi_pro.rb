@@ -1,6 +1,4 @@
-
-
-# require 'httparty'
+require 'httparty'
 require 'json'
 require 'open-uri'
 require 'rack'
@@ -176,6 +174,18 @@ class Form::HuobiPro
     perform(path, params, request_method)
   end
 
+  # 查询当前委托、历史委托
+  def open_orders symbol, trade_type
+    params = {
+      'symbol' => symbol,
+      'types' => trade_type,
+      'states' => 'pre-submitted, submitted, partial-filled, partial-canceled'
+    }
+    path = '/v1/order/orders'
+    request_method = 'GET'
+    perform(path, params, request_method)
+  end
+
   # ## 申请提现虚拟币
   # def withdraw_virtual_create(address,amount,currency)
   #   path = "/v1/dw/withdraw/api/create"
@@ -204,17 +214,7 @@ class Form::HuobiPro
   #   perform(path,params,request_method)
   # end
 
-  # ## 查询当前委托、历史委托
-  # def open_orders(symbol,side)
-  #   params ={
-  #     "symbol" => symbol,
-  #     "types" => "#{side}-limit",
-  #     "states" => "pre-submitted,submitted,partial-filled,partial-canceled"
-  #   }
-  #   path = "/v1/order/orders"
-  #   request_method = 'GET'
-  #   perform(path,params,request_method)
-  # end
+
 
   # ## 查询当前成交、历史成交
   # def history_matchresults symbol
@@ -284,11 +284,9 @@ class Form::HuobiPro
     header['Signature'] = sign(data)
 
     url = "https://api.huobi.pro#{path}?#{Rack::Utils.build_query(header)}"
-    http = Net::HTTP.new(@uri.host, @uri.port)
-    http.use_ssl = true
 
-    response = http.send_request(request_method, url, JSON.dump(params), @headers).body
-    JSON.parse response
+    response = HTTParty.get url
+    response.parsed_response
   rescue Exception => e
     { 'message' => 'error' ,'request_error' => e.message }
   end
