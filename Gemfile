@@ -36,6 +36,7 @@ gem 'redis', '~> 3.0'
 gem 'sidekiq'
 
 gem 'mechanize', '~> 2.7', '>= 2.7.5'
+gem 'httparty', '~> 0.13.7'
 
 group :development, :test do
   # Call 'pry.binding' anywhere in the code to stop execution and get a debugger console
