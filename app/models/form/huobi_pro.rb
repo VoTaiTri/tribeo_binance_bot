@@ -82,7 +82,7 @@ class Form::HuobiPro
 
     max_trade = datas.max_by{ |mx| mx['price'] }['price']
     min_trade = datas.min_by{ |mn| mn['price'] }['price']
-    [min_trade, max_trade]
+    { min_price: min_trade, max_price: max_trade }
   end
 
   # Tong hop gia ca thi truong trong 24h
@@ -111,7 +111,7 @@ class Form::HuobiPro
 
   # Check your account detail
   # Require: login
-  def accounts
+  def account_info
     path = '/v1/account/accounts'
     request_method = 'GET'
     params = {}
@@ -135,16 +135,17 @@ class Form::HuobiPro
 
   # Create new order
   # Return data = order_id
+  # trade_type = sell-limit, buy-limit,...
   def new_order symbol, trade_type, price, amount
     path = '/v1/order/orders/place'
     request_method = 'POST'
     params = {
-      'account-id' => @account_id,
-      'amount' => amount,
-      'price' => price,
-      'source' => 'api',
-      'symbol' => symbol,
-      'type' => trade_type
+      'account-id'  => @account_id,
+      'amount'      => amount,
+      'price'       => price,
+      'source'      => 'api',
+      'symbol'      => symbol,
+      'type'        => trade_type
     }
     perform(path, params, request_method)
   end
@@ -158,7 +159,7 @@ class Form::HuobiPro
     perform(path, params, request_method)
   end
 
-  # Batch cancel order
+  # Batch cancel multiple orders
   def batch_cancel order_ids
     path = '/v1/order/orders/batchcancel'
     request_method = 'POST'
@@ -176,13 +177,13 @@ class Form::HuobiPro
 
   # 查询当前委托、历史委托
   def open_orders symbol, trade_type
+    path = '/v1/order/orders'
+    request_method = 'GET'
     params = {
       'symbol' => symbol,
       'types' => trade_type,
       'states' => 'pre-submitted, submitted, partial-filled, partial-canceled'
     }
-    path = '/v1/order/orders'
-    request_method = 'GET'
     perform(path, params, request_method)
   end
 
@@ -213,8 +214,6 @@ class Form::HuobiPro
   #   params ={"order-id" => order_id}
   #   perform(path,params,request_method)
   # end
-
-
 
   # ## 查询当前成交、历史成交
   # def history_matchresults symbol
@@ -284,11 +283,13 @@ class Form::HuobiPro
     header['Signature'] = sign(data)
 
     url = "https://api.huobi.pro#{path}?#{Rack::Utils.build_query(header)}"
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    http.use_ssl = true
 
-    response = HTTParty.get url
-    response.parsed_response
+    response = http.send_request(request_method, url, JSON.dump(params), @headers).body
+    JSON.parse response
   rescue Exception => e
-    { 'message' => 'error' ,'request_error' => e.message }
+    { message: 'error', request_error: e.message }
   end
 
   def sign data
