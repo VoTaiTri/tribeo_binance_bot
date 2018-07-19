@@ -1,7 +1,7 @@
 class CreateHuobiProTransactions < ActiveRecord::Migration[5.1]
   def change
     create_table :huobi_pro_transactions do |t|
-      t.references :huobi_pro_symbol, index: true 
+      t.references :huobi_pro_symbol, index: true
       t.decimal :order_id, precision: 15, scale: 0
       t.integer :sell_type, index: true, limit: 1, default: 0
       t.float :sell_price, limit: 15

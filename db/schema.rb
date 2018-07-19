@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_06_101611) do
+ActiveRecord::Schema.define(version: 2018_07_17_043640) do
 
   create_table "huobi_pro_symbols", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.decimal "order_id", precision: 15
@@ -18,13 +18,14 @@ ActiveRecord::Schema.define(version: 2018_07_06_101611) do
     t.string "symbol_base", limit: 8
     t.float "buy_price"
     t.float "buy_amount"
-    t.datetime "buy_time", null: false
+    t.datetime "buy_time", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.float "wait_price"
     t.float "target1"
     t.float "target2"
     t.float "target3"
     t.float "stoploss"
     t.float "profit"
-    t.boolean "status", default: false
+    t.integer "status", limit: 2, default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["status"], name: "index_huobi_pro_symbols_on_status"
@@ -40,7 +41,7 @@ ActiveRecord::Schema.define(version: 2018_07_06_101611) do
     t.float "sell_amount"
     t.datetime "sell_time", null: false
     t.float "profit"
-    t.boolean "status", default: false
+    t.integer "status", limit: 2, default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["huobi_pro_symbol_id"], name: "index_huobi_pro_transactions_on_huobi_pro_symbol_id"

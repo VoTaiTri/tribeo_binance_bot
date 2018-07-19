@@ -3,5 +3,6 @@ class HuobiProTransaction < ApplicationRecord
 
   validates :order_id, :sell_price, :sell_amount, :sell_time, presence: true
 
-  enum sell_type: { stoploss: 0, target1: 1, target2: 2, target3: 3 }
+  enum sell_type: [:stoploss, :target1, :target2, :target3]
+  enum status: [:trading, :done, :stop]
 end
